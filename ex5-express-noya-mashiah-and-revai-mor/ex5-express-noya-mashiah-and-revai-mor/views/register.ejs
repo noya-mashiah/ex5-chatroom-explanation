@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - ChatApp</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #FFE3F0;
+        }
+        .register-container {
+            width: 100%;
+            max-width: 900px;
+            padding: 2rem;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #007bff, #6f42c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .alert {
+            margin-bottom: 1rem;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+        .step-form {
+            display: none;
+        }
+        .step-form.active {
+            display: block;
+        }
+        .back-button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <!-- Logo -->
+    <div class="logo">
+        <div class="logo-text">ChatApp</div>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="card">
+        <div class="card-body">
+
+            <!-- Error/Success Message Area -->
+            <div id="messageArea"></div>
+
+            <!-- Timer Display -->
+            <div id="timerDisplay" class="text-center mb-3" style="display: none; color: green; font-size: 1.125rem; font-weight: 500;">
+                Time remaining: <span id="timerSeconds"><%= registerTimeout %></span> seconds
+            </div>
+
+            <!-- Step 1 Form: Name and Email -->
+            <form id="step1Form" class="step-form <% if (step === 1) { %>active<% } %>">
+                <!-- Step 1 Heading -->
+                <h2 class="card-title text-center mb-4">Please register</h2>
+                <p class="text-center text-muted small mb-3">* All fields are limited to 32 characters maximum</p>
+
+                <!-- Email Field -->
+                <div class="mb-3">
+                    <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            placeholder="Email address"
+                            maxlength="32"
+                            required
+                            title="Enter a valid email address (spaces before/after will be trimmed)"
+                            autocomplete="email"
+                            value="<%= formData && formData.email ? formData.email : '' %>">
+                </div>
+
+                <!-- First Name Field -->
+                <div class="mb-3">
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="firstName"
+                            name="firstName"
+                            placeholder="First name"
+                            pattern="^\s*[a-zA-Z]+\s*$"
+                            minlength="3"
+                            maxlength="32"
+                            required
+                            title="Only letters allowed, 3-32 characters"
+                            autocomplete="given-name"
+                            value="<%= formData && formData.firstName ? formData.firstName : '' %>">
+                </div>
+
+                <!-- Last Name Field -->
+                <div class="mb-3">
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="lastName"
+                            name="lastName"
+                            placeholder="Last name"
+                            pattern="^\s*[a-zA-Z]+\s*$"
+                            minlength="3"
+                            maxlength="32"
+                            required
+                            title="Only letters allowed, 3-32 characters"
+                            autocomplete="family-name"
+                            value="<%= formData && formData.lastName ? formData.lastName : '' %>">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">Next</button>
+            </form>
+
+            <!-- Step 2 Form: Password -->
+            <form id="step2Form" class="step-form <% if (step === 2) { %>active<% } %>">
+                <!-- Hidden fields for Step 1 data (for final submission) -->
+                <input type="hidden" id="hiddenFirstName" name="firstName" value="<%= formData && formData.firstName ? formData.firstName : '' %>">
+                <input type="hidden" id="hiddenLastName" name="lastName" value="<%= formData && formData.lastName ? formData.lastName : '' %>">
+                <input type="hidden" id="hiddenEmail" name="email" value="<%= formData && formData.email ? formData.email : '' %>">
+
+                <!-- Step 2 Heading -->
+                <h3 class="text-center mb-3">Please choose a password</h3>
+                <p class="text-center text-muted small mb-3">* Password is limited to 32 characters maximum</p>
+
+                <!-- Password Field -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            maxlength="32"
+                            required
+                            autocomplete="new-password">
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="mb-3">
+                    <label for="verifyPassword" class="form-label">Confirm Password</label>
+                    <input
+                            type="password"
+                            class="form-control"
+                            id="verifyPassword"
+                            name="verifyPassword"
+                            maxlength="32"
+                            required
+                            autocomplete="new-password">
+                </div>
+
+                <!-- Buttons: Side by side -->
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary flex-fill" id="backButton">Back</button>
+                    <button type="submit" class="btn btn-primary flex-fill">Register</button>
+                </div>
+            </form>
+
+            <!-- Login Link -->
+            <div class="login-link">
+                already registered? <a href="/">go to login page</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="copyright">
+        © SK
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Registration JavaScript -->
+<!-- 
+    Pass server-side data (cookie timestamp and timeout) to client-side JavaScript.
+    Using data attributes instead of inline EJS in script tags for better IDE compatibility
+    and to separate server-side data from client-side JavaScript logic.
+    This data is used by the registration timer to calculate remaining time based on
+    the actual cookie timestamp (which starts when user first moves to Step 2).
+-->
+<div id="registerData" 
+     data-timestamp="<%= cookieTimestamp || '' %>" 
+     data-timeout="<%= registerTimeout %>"
+     data-warning-threshold="<%= registerTimeoutWarning %>" 
+     data-had-cookie="<%= hadCookieOnLoad ? 'true' : 'false' %>"
+     data-error="<%= error || '' %>"
+     style="display: none;"></div>
+     <script src="/javascripts/common.js"></script>
+     <script src="/javascripts/register.js"></script>
+<script>
+    // Read server-side data from data attribute and make it available globally
+    const dataEl = document.getElementById('registerData');
+    window.REGISTER_DATA = {
+        cookieTimestamp: dataEl.getAttribute('data-timestamp') ? parseInt(dataEl.getAttribute('data-timestamp')) : null,
+        registerTimeout: parseInt(dataEl.getAttribute('data-timeout')) || null, // Server always provides this value
+        registerTimeoutWarning: parseInt(dataEl.getAttribute('data-warning-threshold')) || null, // Warning threshold from server
+        hadCookieOnLoad: dataEl.getAttribute('data-had-cookie') === 'true'
+    };
+    
+    // Display error message if present (from server-side)
+    const errorMessage = dataEl.getAttribute('data-error');
+    if (errorMessage && errorMessage.trim() !== '' && document.getElementById('messageArea')) {
+        // Safe error display - prevents XSS by using textContent instead of innerHTML
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger';
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.textContent = errorMessage; // Safe - no HTML interpretation
+        document.getElementById('messageArea').appendChild(alertDiv);
+    }
+</script>

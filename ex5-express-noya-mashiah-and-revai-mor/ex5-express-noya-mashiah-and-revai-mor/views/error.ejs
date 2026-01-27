@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - ChatApp</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .error-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .error-code {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .error-stack {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            font-size: 0.875rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <!-- Error Card -->
+        <div class="card">
+            <div class="card-body text-center">
+                <!-- Error Code -->
+                <% if (error && error.status) { %>
+                    <div class="error-code mb-3"><%= error.status %></div>
+                <% } else { %>
+                    <div class="error-code mb-3">500</div>
+                <% } %>
+
+                <!-- Error Message -->
+                <h1 class="card-title mb-4"><%= message %></h1>
+
+                <!-- Error Stack (Development only) -->
+                <% if (error && error.stack) { %>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Error Details:</strong>
+                        <pre class="error-stack mt-3 mb-0"><%= error.stack %></pre>
+                    </div>
+                <% } %>
+
+                <!-- Home Link -->
+                <div class="mt-4">
+                    <a href="/" class="btn btn-primary">Go to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
